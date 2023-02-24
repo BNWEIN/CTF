@@ -34,5 +34,5 @@ $csv = $table.Rows | Select-Object -Skip 1 | ForEach-Object {
     }
 }
 
-$csv | Where-Object { $_.score -gt 3000 } | Sort-Object { $_.'Total Time' } | Format-Table -AutoSize
+$csv | Where-Object { $_.score -gt 0 } | Sort-Object -Property @{Expression='Score';Descending=$true},@{Expression='Total Time';Descending=$false} | Format-Table -AutoSize
 
