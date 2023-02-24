@@ -5,11 +5,17 @@ $challenge4StartDate = Get-Date "2023-02-23 18:00:00"
 $challenge5StartDate = Get-Date "2023-02-23 18:00:00"
 
 # Fetch the HTML content of the website
+try{
 $url = "https://ctf.cyberdrain.com/showdownscore"
 $html = Invoke-WebRequest $url
+} catch {
+write-host "Unable to fetch data from website. Have you checked the URL?" -ForegroundColor Red
+break
+}
 
 # Find the table element in the HTML
 $table = $html.ParsedHtml.getElementsByTagName("table") | Select-Object -First 1
+
 
 # Get the table rows and convert them to an array of custom objects
 $csv = $table.Rows | Select-Object -Skip 1 | ForEach-Object {
@@ -27,8 +33,8 @@ $csv = $table.Rows | Select-Object -Skip 1 | ForEach-Object {
     $challenge5TimeTaken = if ($challenge5) { (New-TimeSpan $challenge5StartDate $challenge4) } else { New-TimeSpan }
 
     [PSCustomObject]@{
-        Score = $_.Cells[1].InnerText
         Team = $_.Cells[0].InnerText
+        Score = $_.Cells[1].InnerText
         "Challenge 1" = if ($challenge1) { $challenge1TimeTaken.ToString() } else { "" }
         "Challenge 2" = if ($challenge2) { $challenge2TimeTaken.ToString() } else { "" }
         "Challenge 3" = if ($challenge3) { $challenge3TimeTaken.ToString() } else { "" }
@@ -40,3 +46,9 @@ $csv = $table.Rows | Select-Object -Skip 1 | ForEach-Object {
 
 $csv | Where-Object { $_.score -gt 0 } | Sort-Object -Property @{Expression='Score';Descending=$true},@{Expression='Total Time';Descending=$false} | Format-Table -AutoSize
 
+$firstPlaceTeam = ($csv | Where-Object { $_.score -gt 0 } | Sort-Object -Property @{Expression='Score';Descending=$true},@{Expression='Total Time';Descending=$false} | Select-Object -First 1).Team
+Write-Host "The team in first place is $firstPlaceTeam" -ForegroundColor Red
+$SecondPlaceTeam = ($csv | Where-Object { $_.score -gt 0 } | Sort-Object -Property @{Expression='Score';Descending=$true},@{Expression='Total Time';Descending=$false} | Select-Object -skip 1 -First 1).Team
+Write-Host "The team in second place is $SecondPlaceTeam" -ForegroundColor Green
+$ThirdPlaceTeam = ($csv | Where-Object { $_.score -gt 0 } | Sort-Object -Property @{Expression='Score';Descending=$true},@{Expression='Total Time';Descending=$false} | Select-Object -skip 2 -First 1).Team
+Write-Host "The team in third place is $ThirdPlaceTeam" -ForegroundColor Yellow
