@@ -1,2 +1,2 @@
 # CTF
-CTG
+CTF Scripts
