@@ -2,7 +2,7 @@ $challenge1StartDate = Get-Date "2023-02-14 11:00:00"
 $challenge2StartDate = Get-Date "2023-02-16 11:00:00"
 $challenge3StartDate = Get-Date "2023-02-20 12:00:00"
 $challenge4StartDate = Get-Date "2023-02-23 18:00:00"
-$challenge5StartDate = Get-Date "2023-02-23 18:00:00"
+$challenge5StartDate = Get-Date "2023-02-25 11:00:00"
 
 # Fetch the HTML content of the website
 try{
@@ -30,7 +30,7 @@ $csv = $table.Rows | Select-Object -Skip 1 | ForEach-Object {
     $challenge2TimeTaken = if ($challenge2) { (New-TimeSpan $challenge2StartDate $challenge2) } else { New-TimeSpan }
     $challenge3TimeTaken = if ($challenge3) { (New-TimeSpan $challenge3StartDate $challenge3) } else { New-TimeSpan }
     $challenge4TimeTaken = if ($challenge4) { (New-TimeSpan $challenge4StartDate $challenge4) } else { New-TimeSpan }
-    $challenge5TimeTaken = if ($challenge5) { (New-TimeSpan $challenge5StartDate $challenge4) } else { New-TimeSpan }
+    $challenge5TimeTaken = if ($challenge5) { (New-TimeSpan $challenge5StartDate $challenge5) } else { New-TimeSpan }
 
     [PSCustomObject]@{
         Team = $_.Cells[0].InnerText
